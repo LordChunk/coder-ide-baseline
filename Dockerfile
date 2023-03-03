@@ -1,9 +1,5 @@
 FROM ubuntu:20.04
 
-USER chunk
-WORKDIR /home/chunk
-COPY bashrc /home/chunk/.bashrc
-
 RUN apt-get update \
   # Prevent interactive dialog during apt-get install
   && export DEBIAN_FRONTEND=noninteractive \
@@ -27,3 +23,7 @@ RUN apt-get update \
     && apt-get update \
     && apt-get install -y docker-ce-cli docker-compose 
 
+# Set up user
+USER chunk
+WORKDIR /home/chunk
+COPY bashrc /home/chunk/.bashrc
