@@ -1,6 +1,8 @@
 FROM ubuntu:20.04
 
-# Set arch as arm64
+USER chunk
+WORKDIR /home/chunk
+COPY bashrc /home/chunk/.bashrc
 
 RUN apt-get update \
   # Prevent interactive dialog during apt-get install
