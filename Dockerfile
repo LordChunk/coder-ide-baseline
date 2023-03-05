@@ -28,7 +28,7 @@ RUN apt-get update \
 RUN useradd chunk \
       --create-home \
       --shell=/bin/bash \
-      --groups=docker \
+      # --groups=docker \
       --uid=1000 \
       --user-group && \
     echo "chunk ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers.d/nopasswd
