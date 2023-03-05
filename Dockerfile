@@ -1,5 +1,7 @@
 FROM ubuntu:20.04
 
+SHELL ["/bin/bash", "-c"]
+
 RUN apt-get update \
   # Prevent interactive dialog during apt-get install
   && export DEBIAN_FRONTEND=noninteractive \
