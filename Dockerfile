@@ -23,7 +23,15 @@ RUN apt-get update \
     && apt-get update \
     && apt-get install -y docker-ce-cli docker-compose 
 
+RUN useradd chunk \
+      --create-home \
+      --shell=/bin/bash \
+      --groups=docker \
+      --uid=1000 \
+      --user-group && \
+    echo "chunk ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers.d/nopasswd
+
+
 # Set up user
 USER chunk
-WORKDIR /home/chunk
 COPY bashrc /home/chunk/.bashrc
