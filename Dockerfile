@@ -47,13 +47,13 @@ RUN chmod +x /usr/local/bin/docker-compose
 # Make typing unicode characters in the terminal work.
 ENV LANG en_US.UTF-8
 
-# Add a user `chunk` so that you're not developing as the `root` user
-RUN useradd chunk \
+# Add a user `coder` so that you're not developing as the `root` user
+RUN useradd coder \
       --create-home \
       --shell=/bin/bash \
       --groups=docker \
       --uid=1000 \
       --user-group && \
-    echo "chunk ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers.d/nopasswd
+    echo "coder ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers.d/nopasswd
 
-USER chunk
+USER coder
