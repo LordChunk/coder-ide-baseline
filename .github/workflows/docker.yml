@@ -50,7 +50,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4.0.0
         with:
-          platforms: linux/arm64
+          platforms: linux/arm64/v8
           # Only releases or pushes to development or main branch
           push: ${{ github.event_name == 'release' || env.TAG_NAME == 'development' || env.TAG_NAME == 'latest' }}
           tags: ghcr.io/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }}
