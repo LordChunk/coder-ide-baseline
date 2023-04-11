@@ -117,7 +117,7 @@ if [ -d "${var.repo}" ]; then
     docker compose pull
 
     # Start the devcontainer
-    
+    devcontainer up    
   fi
 fi
 
