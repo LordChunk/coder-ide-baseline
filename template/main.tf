@@ -108,8 +108,9 @@ curl -fsSL https://code-server.dev/install.sh | sh
 code-server --auth none --port 13337 &
 
 # Navigate to repo if it exists
-if [ -d "${var.repo}" ]; then
-  cd ${replace(var.repo, ".git", "")}
+repo_folder=${replace(var.repo, ".git", "")}
+if [ -d "$repo_folder" ]; then
+  cd $repo_folder
 
   # Check if there is a .devcontainer folder
   if [ -d ".devcontainer" ]; then
