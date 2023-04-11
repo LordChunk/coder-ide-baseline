@@ -117,7 +117,7 @@ if [ -d "$repo_folder" ]; then
   # Check if there is a .devcontainer folder
   if [ -d ".devcontainer" ]; then
     # Start devcontainer
-    devcontainer up    
+    devcontainer up --workspace-folder=. --prebuild
   fi
 fi
 
