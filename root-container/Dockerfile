@@ -37,11 +37,6 @@ RUN apt-get update && \
     add-apt-repository ppa:git-core/ppa && \
     DEBIAN_FRONTEND="noninteractive" apt-get install --yes git
 
-# Install nvm and Node.js LTS
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && \
-    . ~/.nvm/nvm.sh && \
-    nvm install --lts
-
 # Enables Docker starting with systemd
 RUN systemctl enable docker
 
@@ -62,3 +57,11 @@ RUN useradd chunk \
     echo "chunk ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers.d/nopasswd
 
 USER chunk
+
+# Install nvm and Node.js LTS
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && \
+    . ~/.nvm/nvm.sh && \
+    nvm install --lts && \
+    nvm alias default lts/* && \
+    # Install devcontainer CLI
+    npm install -g @devcontainers/cli
