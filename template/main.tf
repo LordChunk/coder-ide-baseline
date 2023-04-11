@@ -114,10 +114,7 @@ if [ -d "$repo_folder" ]; then
 
   # Check if there is a .devcontainer folder
   if [ -d ".devcontainer" ]; then
-    # Pull the devcontainer image
-    docker compose pull
-
-    # Start the devcontainer
+    # Start devcontainer
     devcontainer up    
   fi
 fi
