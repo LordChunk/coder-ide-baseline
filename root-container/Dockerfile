@@ -65,4 +65,4 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | b
     nvm alias default lts/* && \
     nvm cache clear && \
     # devcontainers cli for prebuilding devcontainers
-    npm install -g @devcontainers/cli \
+    npm install -g @devcontainers/cli
