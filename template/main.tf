@@ -107,8 +107,10 @@ git clone git@github.com:${var.repo}
 curl -fsSL https://code-server.dev/install.sh | sh
 code-server --auth none --port 13337 &
 
+# Set to lower case and strip user and .git from repo and 
+repo_folder=$(echo ${var.repo} | tr '[:upper:]' '[:lower:]' | sed 's/.*\///' | sed 's/\.git//')
+
 # Navigate to repo if it exists
-repo_folder=${replace(var.repo, ".git", "")}
 if [ -d "$repo_folder" ]; then
   cd $repo_folder
 
