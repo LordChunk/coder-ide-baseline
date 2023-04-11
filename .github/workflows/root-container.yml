@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
     paths:
       - "root-container/**"
+      - ".github/workflows/root-container.yml"
   schedule:
     - cron: "0 0 * * 0"
 
@@ -52,7 +53,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4.0.0
         with:
-          platforms: linux/arm64/v8
+          platforms: linux/arm64,linux/amd64
           context: ./root-container
           # Only releases or pushes to development or main branch
           push: ${{ github.event_name == 'release' || env.TAG_NAME == 'development' || env.TAG_NAME == 'latest' }}
