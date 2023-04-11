@@ -112,7 +112,8 @@ if [ -d "$repo_folder" ]; then
 
   # Check if there is a .devcontainer folder
   if [ -d ".devcontainer" ]; then
-    # Start devcontainer
+    npm install -g @devcontainers/cli
+    # Prebuild the devcontainer
     devcontainer up --workspace-folder=. --prebuild
   fi
 fi
@@ -152,7 +153,7 @@ resource "docker_container" "workspace" {
 
   # Use the docker gateway if the access URL is 127.0.0.1
   command = [
-    "sh", "-c",
+    "bash", "-c",
     <<EOT
     trap '[ $? -ne 0 ] && echo === Agent script exited with non-zero code. Sleeping infinitely to preserve logs... && sleep infinity' EXIT
     ${replace(coder_agent.dev.init_script, "/localhost|127\\.0\\.0\\.1/", "host.docker.internal")}
