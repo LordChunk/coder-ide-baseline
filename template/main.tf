@@ -109,7 +109,7 @@ code-server --auth none --port 13337 &
 
 # Navigate to repo if it exists
 if [ -d "${var.repo}" ]; then
-  cd "${var.repo}"
+  cd ${replace(var.repo, ".git", "")}
 
   # Check if there is a .devcontainer folder
   if [ -d ".devcontainer" ]; then
