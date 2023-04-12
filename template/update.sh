@@ -2,4 +2,4 @@
 
 cd "$(dirname "$0")"
 
-coder template push docker-in-docker
+coder template push docker-in-docker --yes
