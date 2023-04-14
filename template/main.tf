@@ -4,11 +4,11 @@ terraform {
   required_providers {
     coder = {
       source  = "coder/coder"
-      version = "~> 0.6.0"
+      version = "~> 0.7.0"
     }
     docker = {
       source  = "kreuzwerker/docker"
-      version = "~> 2.22.0"
+      version = "~> 3.0.2"
     }
   }
 }
@@ -81,6 +81,14 @@ variable "git_name" {
   default = "LordChunk"
 }
 
+data "docker_registry_image" "base_image" {
+  name = var.image
+}
+
+resource "docker_image" "base_image" {
+  name = data.docker_registry_image.base_image.name
+  pull_triggers = [data.docker_registry_image.base_image.sha256_digest]
+}
 
 resource "coder_agent" "dev" {
   arch           = "arm64"
@@ -116,7 +124,7 @@ if [ -d "$repo_folder" ]; then
   # Check if there is a .devcontainer folder
   if [ -d ".devcontainer" ]; then
     # Prebuild the devcontainer
-    devcontainer up --workspace-folder=. --prebuild
+    devcontainer up --workspace-folder=.
   fi
 fi
 
@@ -144,7 +152,7 @@ resource "coder_app" "code-server" {
 
 resource "docker_container" "workspace" {
   count = data.coder_workspace.me.start_count
-  image = "${var.image}"
+  image = docker_image.base_image.image_id
   # Uses lower() to avoid Docker restriction on container names.
   name     = "coder-${data.coder_workspace.me.owner}-${lower(data.coder_workspace.me.name)}"
   hostname = lower(data.coder_workspace.me.name)
