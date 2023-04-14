@@ -65,4 +65,8 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | b
     nvm alias default lts/* && \
     nvm cache clear && \
     # devcontainers cli for prebuilding devcontainers
-    npm install -g @devcontainers/cli
+    npm install -g @devcontainers/cli \
+    # Add nvm to the path
+    echo "export NVM_DIR=\"\$HOME/.nvm\"" >> ~/.bashrc && \
+    echo "[ -s \"\$NVM_DIR/nvm.sh\" ] && \. \"\$NVM_DIR/nvm.sh\"" >> ~/.bashrc && \
+    echo "[ -s \"\$NVM_DIR/bash_completion\" ] && \. \"\$NVM_DIR/bash_completion\"" >> ~/.bashrc
