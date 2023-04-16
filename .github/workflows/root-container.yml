@@ -61,3 +61,23 @@ jobs:
           # Use GitHub Actions cache
           cache-from: type=gha
           cache-to: type=gha,mode=max
+  update-template:
+    needs: docker
+    name: Update template
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Install Coder CLI
+        run: curl -fsSL https://coder.com/install.sh | sh
+      - name: Authenticate with Coder
+        run: coder login ${{ secrets.CODER_URL }} --token ${{ secrets.CODER_TOKEN }}
+      - name: Get hash of latest IDE image 
+        run: "DOCKER_IMAGE_HASH=$(docker inspect ghcr.io/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }} --format='{{index .RepoDigests 0}}' | cut -d : -f 2) && echo DOCKER_IMAGE_HASH=$DOCKER_IMAGE_HASH >> $GITHUB_ENV"
+      - run: cd template
+      - name: Replace all "ghcr.io/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }}" with "ghcr.io/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }}@${{ env.DOCKER_IMAGE_HASH }}" in main.tf
+        run: sed -i "s/ghcr.io\/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }}/ghcr.io\/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }}@${{ env.DOCKER_IMAGE_HASH }}/g" main.tf
+      - name: Push template changes to Coder
+        run: ./update.sh
+        
