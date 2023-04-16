@@ -95,43 +95,43 @@ resource "coder_agent" "dev" {
   arch           = "arm64"
   os             = "linux"
   startup_script  = <<EOT
-#!/bin/bash
+    #!/bin/bash
 
-# Start Docker
-sudo dockerd &
+    # Start Docker
+    sudo dockerd &
 
-# Setup git
-mkdir -p ~/.ssh
-ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
+    # Setup git
+    mkdir -p ~/.ssh
+    ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
 
-# Setup git user
-git config --global user.email "${var.git_email}"
-git config --global user.name "${var.git_name}"
+    # Setup git user
+    git config --global user.email "${var.git_email}"
+    git config --global user.name "${var.git_name}"
 
-# Clone repo
-git clone git@github.com:${var.repo}
+    # Clone repo
+    git clone git@github.com:${var.repo}
 
-# Set to lower case and strip user and .git from repo and 
-repo_folder=$(echo ${var.repo} | tr '[:upper:]' '[:lower:]' | sed 's/.*\///' | sed 's/\.git//')
+    # Set to lower case and strip user and .git from repo and 
+    repo_folder=$(echo ${var.repo} | tr '[:upper:]' '[:lower:]' | sed 's/.*\///' | sed 's/\.git//')
 
-# Manually add nvm to path for devcontainer prebuild
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    # Manually add nvm to path for devcontainer prebuild
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
-# Navigate to repo if it exists
-if [ -d "$repo_folder" ]; then
-  cd $repo_folder
+    # Navigate to repo if it exists
+    if [ -d "$repo_folder" ]; then
+      cd $repo_folder
 
-  # Check if there is a .devcontainer folder
-  if [ -d ".devcontainer" ]; then
-    # Prebuild the devcontainer
-    devcontainer up --workspace-folder=.
-  fi
-fi
+      # Check if there is a .devcontainer folder
+      if [ -d ".devcontainer" ]; then
+        # Prebuild the devcontainer
+        devcontainer up --workspace-folder=.
+      fi
+    fi
 
-# install code-server
-curl -fsSL https://code-server.dev/install.sh | sh
-code-server --auth none --port 13337 &
+    # install code-server
+    curl -fsSL https://code-server.dev/install.sh | sh
+    code-server --auth none --port 13337 &
   EOT
 }
 
