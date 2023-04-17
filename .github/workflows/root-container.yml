@@ -9,9 +9,14 @@ on:
   schedule:
     - cron: "0 0 * * 0"
 
+env:
+  DOCKER_IDE_IMAGE: lordchunk/coder-ide-baseline
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   docker:
+    env:
+      TAG_NAME:
     name: Docker Build and Push
     runs-on: ubuntu-latest
     steps:
@@ -31,10 +36,6 @@ jobs:
         if: github.event_name == 'release'
         shell: bash
         run: echo "TAG_NAME=$(echo $GITHUB_REF | cut -d / -f 3)" >> $GITHUB_ENV
-
-      - name: Store repo name and owner in lower case
-        shell: bash
-        run: echo "LOWER_CASE_REPO_NAME=$(echo ${GITHUB_REPOSITORY} | tr /A-Z/ /a-z/)" >> $GITHUB_ENV
 
       ## Configure, build and push docker image
       - name: Set up Docker Buildx
@@ -57,7 +58,7 @@ jobs:
           context: ./root-container
           # Only releases or pushes to development or main branch
           push: ${{ github.event_name == 'release' || env.TAG_NAME == 'development' || env.TAG_NAME == 'latest' }}
-          tags: ghcr.io/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }}
+          tags: ghcr.io/${{ env.DOCKER_IDE_IMAGE }}:${{ env.TAG_NAME }}
           # Use GitHub Actions cache
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -75,11 +76,13 @@ jobs:
         run: |
          coder login ${{ secrets.CODER_URL }} \
           --token ${{ secrets.CODER_TOKEN }}
-      - name: Get hash of latest IDE image 
-        run: "DOCKER_IMAGE_HASH=$(docker inspect ghcr.io/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }} --format='{{index .RepoDigests 0}}' | cut -d : -f 2) && echo DOCKER_IMAGE_HASH=$DOCKER_IMAGE_HASH >> $GITHUB_ENV"
+      - name: Get hash of latest IDE image
+        run: |
+          echo "LATEST_IDE_IMAGE_HASH=$(docker buildx imagetools inspect ghcr.io/${{ env.DOCKER_IDE_IMAGE }}:latest --format "{{json .Manifest}}" | jq -r '.digest')" >> $GITHUB_ENV
       - run: cd template
-      - name: Replace all "ghcr.io/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }}" with "ghcr.io/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }}@${{ env.DOCKER_IMAGE_HASH }}" in main.tf
-        run: sed -i "s/ghcr.io\/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }}/ghcr.io\/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }}@${{ env.DOCKER_IMAGE_HASH }}/g" main.tf
+      - name: Update template
+        run: |
+          sed -i "s|ghcr.io/${{ env.DOCKER_IDE_IMAGE }}:latest|${{ env.LATEST_IDE_IMAGE_HASH }}|g" main.tf
       - name: Push template changes to Coder
         run: ./update.sh
         
