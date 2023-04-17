@@ -44,9 +44,6 @@ RUN systemctl enable docker
 RUN curl -L "https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 RUN chmod +x /usr/local/bin/docker-compose
 
-# Install VS Code Server
-RUN curl -fsSL https://code-server.dev/install.sh | sh
-
 # Make typing unicode characters in the terminal work.
 ENV LANG en_US.UTF-8
 
