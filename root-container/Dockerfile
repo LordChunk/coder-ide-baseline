@@ -44,6 +44,9 @@ RUN systemctl enable docker
 RUN curl -L "https://github.com/docker/compose/releases/download/v2.17.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 RUN chmod +x /usr/local/bin/docker-compose
 
+# Install VS Code Server
+RUN curl -fsSL https://code-server.dev/install.sh | sh
+
 # Make typing unicode characters in the terminal work.
 ENV LANG en_US.UTF-8
 
@@ -65,4 +68,4 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | b
     nvm alias default lts/* && \
     nvm cache clear && \
     # devcontainers cli for prebuilding devcontainers
-    npm install -g @devcontainers/cli \
+    npm install -g @devcontainers/cli
