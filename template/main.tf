@@ -22,26 +22,20 @@ provider "coder" {
 data "coder_workspace" "me" {
 }
 
-variable "image" {
+data "coder_parameter" "image" {
   description = <<-EOF
-  Container images from coder-com
+  Base image to use for the workspace.
 
   EOF
-  default = "chunk-baseline"
-  type = list(string)
-  validation {
-    # Must be a key in image_map
-    condition = contains(keys(var.image_map), var.image)
-    error_message = "Invalid image!"   
+  mutable = true
+  name = "image"
+  # Generate a list of options from the local.images map
+  option {
+    name   = "lordchunk/coder-ide-baseline"
+    value = "ghcr.io/lordchunk/coder-ide-baseline:latest"
   }
 }
 
-variable "image_map" {
-  description = "A map of images linked to a static name"
-  default = {
-    "chunk-baseline" = "ghcr.io/lordchunk/coder-ide-baseline:latest"
-  }
-}
 
 variable "repo" {
   description = <<-EOF
@@ -84,7 +78,7 @@ variable "git_name" {
 }
 
 resource "docker_image" "base_image" {
-  name = lookup(var.image_map, var.image)
+  name = data.coder_parameter.image.value
   keep_locally = true
 }
 
