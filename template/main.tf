@@ -27,18 +27,20 @@ variable "image" {
   Container images from coder-com
 
   EOF
-  default = "ghcr.io/lordchunk/coder-ide-baseline:latest"
+  default = "chunk-baseline"
+  type = list(string)
   validation {
-    condition = contains([
-      "ghcr.io/lordchunk/coder-ide-baseline:latest"
-      # "codercom/enterprise-node:ubuntu",
-      # "codercom/enterprise-golang:ubuntu",
-      # "codercom/enterprise-java:ubuntu",
-      # "codercom/enterprise-base:ubuntu",
-      # "marktmilligan/clion-rust:latest"
-    ], var.image)
+    # Must be a key in image_map
+    condition = contains(keys(var.image_map), var.image)
     error_message = "Invalid image!"   
-}  
+  }
+}
+
+variable "image_map" {
+  description = "A map of images linked to a static name"
+  default = {
+    "chunk-baseline" = "ghcr.io/lordchunk/coder-ide-baseline:latest"
+  }
 }
 
 variable "repo" {
@@ -82,7 +84,7 @@ variable "git_name" {
 }
 
 resource "docker_image" "base_image" {
-  name = var.image
+  name = lookup(var.image_map, var.image)
   keep_locally = true
 }
 
