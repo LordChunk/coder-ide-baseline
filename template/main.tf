@@ -81,14 +81,9 @@ variable "git_name" {
   default = "LordChunk"
 }
 
-data "docker_registry_image" "base_image" {
-  name = var.image
-}
-
 resource "docker_image" "base_image" {
-  name = data.docker_registry_image.base_image.name
+  name = var.image
   keep_locally = true
-  pull_triggers = [data.docker_registry_image.base_image.sha256_digest]
 }
 
 resource "coder_agent" "dev" {
