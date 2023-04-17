@@ -83,5 +83,5 @@ jobs:
             sed -i "s|ghcr.io/${{ env.DOCKER_IDE_IMAGE }}:latest|ghcr.io/${{ env.DOCKER_IDE_IMAGE }}@${{ env.LATEST_IDE_IMAGE_HASH }}|g" main.tf
       - name: Push template changes to Coder
         run: |
-          ./template/update.sh
+          ./template/push.sh
         
