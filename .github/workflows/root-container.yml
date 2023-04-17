@@ -74,9 +74,7 @@ jobs:
       - name: Authenticate with Coder
         run: |
          coder login ${{ secrets.CODER_URL }} \
-          --token ${{ secrets.CODER_TOKEN }} \
-          --header CF-Access-Client-Id=${{ secrets.CF_CLIENT_ID }} \
-          --header CF-Access-Client-Secret=${{ secrets.CF_CLIENT_SECRET }}
+          --token ${{ secrets.CODER_TOKEN }}
       - name: Get hash of latest IDE image 
         run: "DOCKER_IMAGE_HASH=$(docker inspect ghcr.io/${{ env.LOWER_CASE_REPO_NAME }}:${{ env.TAG_NAME }} --format='{{index .RepoDigests 0}}' | cut -d : -f 2) && echo DOCKER_IMAGE_HASH=$DOCKER_IMAGE_HASH >> $GITHUB_ENV"
       - run: cd template
