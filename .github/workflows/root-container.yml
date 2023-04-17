@@ -3,9 +3,6 @@ name: Docker Build and Push
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - "root-container/**"
-      - ".github/workflows/root-container.yml"
   schedule:
     - cron: "0 0 * * 0"
 
