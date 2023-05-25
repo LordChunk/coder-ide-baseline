@@ -34,7 +34,7 @@ data "coder_parameter" "image" {
   # Generate a list of options from the local.images map
   option {
     name   = "lordchunk/coder-ide-baseline"
-    value = "ghcr.io/lordchunk/coder-ide-baseline:latest"
+    value = "ghcr.io/lordchunk/coder-ide-baseline:latest" # This value is modified by root-container.yml Step: Write hash to main.tf
   }
 }
 
