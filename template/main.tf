@@ -23,12 +23,13 @@ data "coder_workspace" "me" {
 }
 
 data "coder_parameter" "image" {
+  name = "Base image"
+  type = "string"
   description = <<-EOF
   Base image to use for the workspace.
 
   EOF
   mutable = true
-  name = "image"
   # Generate a list of options from the local.images map
   option {
     name   = "lordchunk/coder-ide-baseline"
@@ -37,43 +38,30 @@ data "coder_parameter" "image" {
 }
 
 
-variable "repo" {
+data  "coder_parameter" "repo" {
+  name = "Repository SSH URL"
+  type = "string"
   description = <<-EOF
   Code repository to clone
 
   e.g. LordChunk/7beek-admin-dashboard.git
 
   EOF
-  # Allow any repo for now
-  default = ""
-  
-  # default = "coder/coder.git"
-  # validation {
-  #   condition = contains([
-  #     "sharkymark/coder-react.git",
-  #     "coder/coder.git", 
-  #     "sharkymark/java_helloworld.git", 
-  #     "sharkymark/python_commissions.git",                 
-  #     "sharkymark/pandas_automl.git",
-  #     "sharkymark/rust-hw.git"     
-  #   ], var.repo)
-  #   error_message = "Invalid repo!"   
-  # }  
 }
 
-variable "git_email" {
+data "coder_parameter" "git_email" {
+  name = "Git email address"
+  type = "string"
   description = <<-EOF
-  Git email address
+  Git email address used for commits.
 
   EOF
   default = "LordChunk@users.noreply.github.com"
 }
 
-variable "git_name" {
-  description = <<-EOF
-  Git name
-
-  EOF
+data "coder_parameter" "git_name" {
+  name = "Git name"
+  type = "string"
   default = "LordChunk"
 }
 
@@ -96,14 +84,14 @@ resource "coder_agent" "dev" {
     ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
 
     # Setup git user
-    git config --global user.email "${var.git_email}"
-    git config --global user.name "${var.git_name}"
+    git config --global user.email "${data.coder_parameter.git_email.value}"
+    git config --global user.name "${data.coder_parameter.git_name.value}"
 
     # Clone repo
-    git clone git@github.com:${var.repo}
+    git clone git@github.com:${data.coder_parameter.repo.value}
 
     # Set to lower case and strip user and .git from repo and 
-    repo_folder=$(echo ${var.repo} | tr '[:upper:]' '[:lower:]' | sed 's/.*\///' | sed 's/\.git//')
+    repo_folder=$(echo ${data.coder_parameter.repo.value} | tr '[:upper:]' '[:lower:]' | sed 's/.*\///' | sed 's/\.git//')
 
     # Manually add nvm to path for devcontainer prebuild
     export NVM_DIR="$HOME/.nvm"
