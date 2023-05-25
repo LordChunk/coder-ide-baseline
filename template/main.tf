@@ -17,6 +17,7 @@ provider "docker" {
 }
 
 provider "coder" {
+  feature_use_managed_variables = "true"
 }
 
 data "coder_workspace" "me" {
