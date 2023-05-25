@@ -23,23 +23,7 @@ provider "coder" {
 data "coder_workspace" "me" {
 }
 
-data "coder_parameter" "image" {
-  name = "Base image"
-  type = "string"
-  description = <<-EOF
-  Base image to use for the workspace.
-
-  EOF
-  mutable = true
-  # Generate a list of options from the local.images map
-  option {
-    name   = "lordchunk/coder-ide-baseline"
-    value = "ghcr.io/lordchunk/coder-ide-baseline:latest" # This value is modified by root-container.yml Step: Write hash to main.tf
-  }
-}
-
-
-data  "coder_parameter" "repo" {
+data "coder_parameter" "repo" {
   name = "Repository SSH URL"
   type = "string"
   description = <<-EOF
@@ -48,6 +32,10 @@ data  "coder_parameter" "repo" {
   e.g. LordChunk/7beek-admin-dashboard.git
 
   EOF
+}
+
+locals {
+  docker_image = "ghcr.io/lordchunk/coder-ide-baseline:latest"
 }
 
 data "coder_parameter" "git_email" {
@@ -66,9 +54,14 @@ data "coder_parameter" "git_name" {
   default = "LordChunk"
 }
 
+data "docker_registry_image" "base_image" {
+  name = local.docker_image
+}
+
 resource "docker_image" "base_image" {
-  name = data.coder_parameter.image.value
+  name = local.docker_image
   keep_locally = true
+  pull_triggers = [data.docker_registry_image.base_image.sha256_digest]
 }
 
 resource "coder_agent" "dev" {
