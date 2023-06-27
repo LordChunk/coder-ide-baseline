@@ -59,29 +59,29 @@ jobs:
           # Use GitHub Actions cache
           cache-from: type=gha
           cache-to: type=gha,mode=max
-  update-template:
-    needs: docker
-    name: Update template
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Install Coder CLI
-        run: curl -fsSL https://coder.com/install.sh | sh
-      - name: Authenticate with Coder
-        run: |
-         coder login ${{ secrets.CODER_URL }} \
-          --token ${{ secrets.CODER_TOKEN }}
-      - name: Get hash of latest IDE image
-        run: |
-          echo "LATEST_IDE_IMAGE_HASH=$(docker buildx imagetools inspect ghcr.io/${{ env.DOCKER_IDE_IMAGE }}:latest --format "{{json .Manifest}}" | jq -r '.digest')" >> $GITHUB_ENV
-      - name: Write hash to main.tf
-        run: |
-            cd template
-            chmod +w main.tf
-            sed -i "s|ghcr.io/${{ env.DOCKER_IDE_IMAGE }}:latest|ghcr.io/${{ env.DOCKER_IDE_IMAGE }}@${{ env.LATEST_IDE_IMAGE_HASH }}|g" main.tf
-      - name: Push template changes to Coder
-        run: |
-          ./template/push.sh
+#   update-template:
+#     needs: docker
+#     name: Update template
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v2
+#       - name: Install Coder CLI
+#         run: curl -fsSL https://coder.com/install.sh | sh
+#       - name: Authenticate with Coder
+#         run: |
+#          coder login ${{ secrets.CODER_URL }} \
+#           --token ${{ secrets.CODER_TOKEN }}
+#       - name: Get hash of latest IDE image
+#         run: |
+#           echo "LATEST_IDE_IMAGE_HASH=$(docker buildx imagetools inspect ghcr.io/${{ env.DOCKER_IDE_IMAGE }}:latest --format "{{json .Manifest}}" | jq -r '.digest')" >> $GITHUB_ENV
+#       - name: Write hash to main.tf
+#         run: |
+#             cd template
+#             chmod +w main.tf
+#             sed -i "s|ghcr.io/${{ env.DOCKER_IDE_IMAGE }}:latest|ghcr.io/${{ env.DOCKER_IDE_IMAGE }}@${{ env.LATEST_IDE_IMAGE_HASH }}|g" main.tf
+#       - name: Push template changes to Coder
+#         run: |
+#           ./template/push.sh
         
