@@ -17,7 +17,7 @@ jobs:
     name: Docker Build and Push
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       ## Setup environment variables
       - name: Set branch name as Docker image tag
@@ -64,7 +64,7 @@ jobs:
 #     name: Update template
 #     runs-on: ubuntu-latest
 #     steps:
-#       - uses: actions/checkout@v3
+#       - uses: actions/checkout@v4
 #       - name: Set up Docker Buildx
 #         uses: docker/setup-buildx-action@v2
 #       - name: Install Coder CLI
