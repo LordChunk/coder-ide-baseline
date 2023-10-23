@@ -45,7 +45,7 @@ data  "coder_parameter" "repo" {
   description = <<-EOF
   Code repository to clone
 
-  e.g. LordChunk/7beek-admin-dashboard.git
+  e.g. git@github.com:LordChunk/7beek-admin-dashboard.git
 
   EOF
 }
@@ -89,7 +89,7 @@ resource "coder_agent" "dev" {
     git config --global user.name "${data.coder_parameter.git_name.value}"
 
     # Clone repo
-    git clone git@github.com:${data.coder_parameter.repo.value}
+    git clone ${data.coder_parameter.repo.value}
 
     # Set to lower case and strip user and .git from repo and 
     repo_folder=$(echo ${data.coder_parameter.repo.value} | tr '[:upper:]' '[:lower:]' | sed 's/.*\///' | sed 's/\.git//')
