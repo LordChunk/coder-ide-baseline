@@ -83,6 +83,7 @@ resource "coder_agent" "dev" {
     # Setup git
     mkdir -p ~/.ssh
     ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
+    ssh-keyscan -t ed25519 gitlab.com >> ~/.ssh/known_hosts
 
     # Setup git user
     git config --global user.email "${data.coder_parameter.git_email.value}"
