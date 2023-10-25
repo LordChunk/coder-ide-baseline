@@ -111,8 +111,11 @@ resource "coder_agent" "dev" {
     fi
 
     # install code-server
+    echo "Installing code-server"
     curl -fsSL https://code-server.dev/install.sh | sh
-    code-server --auth none --port 13337 &
+    echo "Starting code-server"
+    code-server --auth none --port 13337 ./ &
+    echo "Agent script finished"
   EOT
 }
 
