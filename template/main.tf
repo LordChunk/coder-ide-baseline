@@ -92,23 +92,23 @@ resource "coder_agent" "dev" {
     # Clone repo
     git clone ${data.coder_parameter.repo.value}
 
-    # Set to lower case and strip user and .git from repo and 
-    repo_folder=$(echo ${data.coder_parameter.repo.value} | tr '[:upper:]' '[:lower:]' | sed 's/.*\///' | sed 's/\.git//')
+    # # Set to lower case and strip user and .git from repo and 
+    # repo_folder=$(echo ${data.coder_parameter.repo.value} | tr '[:upper:]' '[:lower:]' | sed 's/.*\///' | sed 's/\.git//')
 
-    # Manually add nvm to path for devcontainer prebuild
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    # # Manually add nvm to path for devcontainer prebuild
+    # export NVM_DIR="$HOME/.nvm"
+    # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 
-    # Navigate to repo if it exists
-    if [ -d "$repo_folder" ]; then
-      cd $repo_folder
+    # # Navigate to repo if it exists
+    # if [ -d "$repo_folder" ]; then
+    #   cd $repo_folder
 
-      # Check if there is a .devcontainer folder
-      if [ -d ".devcontainer" ]; then
-        # Prebuild the devcontainer
-        devcontainer up --workspace-folder=.
-      fi
-    fi
+    #   # Check if there is a .devcontainer folder
+    #   if [ -d ".devcontainer" ]; then
+    #     # Prebuild the devcontainer
+    #     devcontainer up --workspace-folder=.
+    #   fi
+    # fi
 
     # install code-server
     echo "Installing code-server"
