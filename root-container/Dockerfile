@@ -59,7 +59,7 @@ RUN useradd chunk \
 USER chunk
 
 # Install nvm and Node.js LTS
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && \
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
     . ~/.nvm/nvm.sh && \
     nvm install --lts && \
     nvm alias default lts/* && \
