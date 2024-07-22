@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v6.1.0
+        uses: docker/build-push-action@v6.4.1
         with:
           platforms: linux/arm64,linux/amd64
           context: ./root-container
