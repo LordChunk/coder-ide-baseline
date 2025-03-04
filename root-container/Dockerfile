@@ -1,22 +1,22 @@
-FROM ubuntu:22.04
+FROM ubuntu:noble
 
 SHELL ["/bin/bash", "-c"]
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Install the Docker apt repository
 RUN apt-get update && \
-    apt-get upgrade --yes && \
-    apt-get install --yes ca-certificates && \
+    apt-get upgrade --yes --no-install-recommends --no-install-suggests && \
+    apt-get install --yes --no-install-recommends --no-install-suggests \
+    ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 COPY docker-archive-keyring.gpg /usr/share/keyrings/docker-archive-keyring.gpg
 COPY docker.list /etc/apt/sources.list.d/docker.list
 
 # Install baseline packages
 RUN apt-get update && \
-    apt-get install --yes \
+    apt-get install --yes --no-install-recommends --no-install-suggests \
     bash \
     build-essential \
-    ca-certificates \
     containerd.io \
     curl \
     docker-ce \
@@ -27,6 +27,7 @@ RUN apt-get update && \
     jq \
     locales \
     man \
+    pipx \
     python3 \
     python3-pip \
     software-properties-common \
@@ -48,8 +49,13 @@ RUN systemctl enable docker
 # Create a symlink for standalone docker-compose usage
 RUN ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/bin/docker-compose
 
+# Generate the desired locale (en_US.UTF-8)
+RUN locale-gen en_US.UTF-8
+
 # Make typing unicode characters in the terminal work.
-ENV LANG en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 
 # Add a user `chunk` so that you're not developing as the `root` user
 RUN useradd chunk \
@@ -61,6 +67,7 @@ RUN useradd chunk \
     echo "chunk ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers.d/nopasswd
 
 USER chunk
+RUN pipx ensurepath # adds user's bin directory to PATH
 
 # Install nvm and Node.js LTS
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
