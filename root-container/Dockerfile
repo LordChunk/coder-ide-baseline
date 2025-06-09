@@ -57,8 +57,9 @@ ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
-# Add a user `chunk` so that you're not developing as the `root` user
-RUN useradd chunk \
+# Remove the `ubuntu` user and add a user `chunk` so that you're not developing as the `root` user
+RUN userdel -r ubuntu && \
+    useradd chunk \
     --create-home \
     --shell=/bin/bash \
     --groups=docker \
